@@ -64,13 +64,9 @@
                                         <div class="bid-option-row">
                                             </span>
                                             <span class="bid-now-button">
-                                                {% if not request.user.is_authenticated or request.user.auctionuser_set.all.0.user_type != "Bidder" %}
                                                 <a href="/product_detail/{{i.id}}">
                                                     <input type="button" id="BidNow" value="BID NOW" class="button btn-lg bid-now" title="Click to Place BID" />
                                                 </a>
-                                                {% else %}
-                                                <input type="button" value="BIDDING DISABLED" class="button btn-lg bid-now" style="background-color: #ccc; cursor: not-allowed;" title="Bidding is disabled for bidders" disabled />
-                                                {% endif %}
                                             </span>
                                         </div>
                                         <!--/.bid-option-row-->

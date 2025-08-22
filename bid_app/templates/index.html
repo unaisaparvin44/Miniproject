@@ -123,7 +123,7 @@
 </script>
 
 
-<script src="WebResourcedab1.js?d=pynGkmcFUV13He1Qd6_TZAJ4wcqxBv22FVF6_J3_KSZ60HDw51F8OuvwvV7QwG5aYesgltpPHzxDJGZg-0V3tg2&amp;t=636725744526079030" type="text/javascript"></script>
+<script src="WebResourcedab1.js?d=pynGkmcFUV13He1Qd6_TZAJ4wcqxBv22FVF6_J3_KSZ60HDw51F8OuvwvV7QwG5aYEsgltpPHzxDJGZg-0V3tg2&amp;t=636725744526079030" type="text/javascript"></script>
 
 
 <script src="ScriptResource15c2.js?d=D9drwtSJ4hBA6O8UhT6CQoOh59R5Wk7IbKs_4TnqImaEsf22JCZ_RbLgs0UlZgzV4SlbSolCO1ag3e0UGh40nZf-fzEsESDXNDvO2PTwm-ErzEuuBZXt0k2ZykDeFPVaD6f6Pp5KhQjCEByhvo8T1xBcEMdOaGb7tpw9y8JmkcU1&amp;t=ffffffffacced670" type="text/javascript"></script>
@@ -161,6 +161,7 @@
                                 <li><a href="/" title="Auction-Home">Home</a></li>
                                     <li><a href="/add_product" title="Add Bid">Add Bid</a></li>
                                     <li><a href="/view_product" title="View Bid">My Product</a></li>
+                                    <li><a href="/meetwinners/" title="Meet Winners">Winners</a></li>
                                     <li><a href="/all_product/" title="Hot Products">All Products</a></li>
                                     <li><a href="/profile/{{request.user.id}}" title="My Profile">My Profile</a></li>
                                     <li><a href="/logout" title="Logout">Log out</a></li>
@@ -173,6 +174,8 @@
                                 {% elif request.user.is_authenticated and request.user.auctionuser_set.all.0.user_type == "Bidder" %}
                                 
                                     <li><a href="/" title="Auction-Home">Home</a></li>
+                                    <li><a href="/meetwinners/" title="Meet Winners">Winners</a></li>
+                                    
                                     <li><a href="/all_product/" title="Hot Products">All Products</a></li>
                                     <li><a href="/profile/{{request.user.id}}" title="My Profile">My Profile</a></li>
                                     <li><a href="/logout" title="Logout">Log out</a></li>

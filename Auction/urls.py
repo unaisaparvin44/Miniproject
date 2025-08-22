@@ -7,8 +7,8 @@ from bid_app.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name="home"),
-    # path('about/', about, name="about"),
-    # path('contact/', contact, name="contact"),
+    path('about/', about, name="about"),
+    path('contact/', contact, name="contact"),
     path('signup/', signup, name="signup"),
     path('login/', login_user, name="login"),
     path('logout/', Logout, name="logout"),
@@ -26,7 +26,7 @@ urlpatterns = [
     path('change_status/<int:pid>', change_status, name="change_status"),
     path('delete_sub_category/<int:pid>', delete_sub_category, name="delete_sub_category"),
     path('delete_user/<int:pid>', delete_user, name="delete_user"),
-    # path('delete_participant/<int:pid>', delete_participant, name="delete_participant"),
+    path('delete_participant/<int:pid>', delete_participant, name="delete_participant"),
     path('profile/<int:pid>', profile, name="profile"),
     path('email_verify/<int:pid>', email_verify, name="email_verify"),
     path('generateotp/<int:pid>', generateotp, name="generateotp"),
@@ -39,7 +39,7 @@ urlpatterns = [
 
 
     path('load-courses/', load_courses, name='ajax_load_courses'),
-    # path('meetwinners/', meetwinners, name='meetwinners'),
+    path('meetwinners/', meetwinners, name='meetwinners'),
     path('all_product/', all_product, name='all_product'),
 
 
@@ -52,8 +52,8 @@ urlpatterns = [
     path('view_categary', View_Categary, name="view_categary"),
     path('add_sub_categary', Add_Sub_Categary, name="add_sub_categary"),
     path('view_sub_category', View_Sub_Categary, name="view_sub_category"),
-    # path('view_participants', view_participants, name="view_participants"),
-    # path('view_winner', View_winner, name="view_winner"),
+    path('view_participants', view_participants, name="view_participants"),
+    path('view_winner', View_winner, name="view_winner"),
     path('change_password', Change_Password, name="change_password"),
 
 

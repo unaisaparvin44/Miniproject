@@ -81,11 +81,6 @@
             You are a seller user.
     {% elif isParticipate %}
                                                     You are a participants of this bidding.
-    {% elif request.user.auctionuser_set.all.0.user_type == "Bidder" %}
-                                                        <div class="alert alert-info text-center">
-                                                            <strong>Bidding is disabled for bidders.</strong><br>
-                                                            You can view products but cannot participate or bid.
-                                                        </div>
     {% else %}
                                                         <a id="Body_lnkBuyNow" href="/make_participants/{{product.id}}" title="Buy Now Not Available" class="aspNetDisabled btn btn-primary" style="cursor:pointer;" onclick="return confirm('Are you sure to become participants of this bid?')">Click to Participate</a>
                                                         
@@ -136,7 +131,6 @@
 	</table>
 
     {% if isParticipate and product.status == "live" %}
-    {% if request.user.auctionuser_set.all.0.user_type != "Bidder" %}
     <form action="/startbidding/{{product.id}}" method="post">
         {% csrf_token %}
         <ul>
@@ -153,12 +147,6 @@
             </li>
         </ul>
     </form>
-    {% else %}
-    <div class="alert alert-warning text-center">
-        <strong>Bidding is disabled for bidders.</strong><br>
-        You can view products but cannot place bids.
-    </div>
-    {% endif %}
 
     {% endif %}
 
