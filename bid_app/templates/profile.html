@@ -99,12 +99,15 @@
         </div>
     </div><hr>
 
-
-
-
-    {% if request.user.id == pro.user.id %}
+    {% if request.user.id == pro.user.id and request.user.auctionuser_set.all.0.user_type == "Seller" %}
         <a href="{% url 'edit_profile' %}"><button class="btn btn-primary" style="width:100%;margin-bottom:5%">Edit Profile</button></a>
+    {% elif request.user.id == pro.user.id and request.user.auctionuser_set.all.0.user_type == "Bidder" %}
+        <div class="alert alert-info text-center">
+            <strong>Profile View Only</strong><br>
+            Bidders can view their profile but cannot edit it.
+        </div>
     {% endif %}
+
     </div>
 
 

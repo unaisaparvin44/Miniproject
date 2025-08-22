@@ -33,11 +33,11 @@ def home(request):
     d = {'upcoming_product':upcoming_product, 'closed_product':closed_product, 'live_product':live_product}
     return render(request, 'home.html', d)
 
-def about(request):
-    return render(request, 'about.html')
+# def about(request):
+#     return render(request, 'about.html')
 
-def contact(request):
-    return render(request, 'contact.html')
+# def contact(request):
+#     return render(request, 'contact.html')
 
 def signup(request):
     if request.method == 'POST':
@@ -100,7 +100,12 @@ def signup(request):
             messages.error(request, "Username already taken. Please choose another.")
             return render(request, 'signup.html', {'form': request.POST})
 
-        mem = Member_fee.objects.filter(fee__iexact="Unpaid").first()
+        # Get or create default Member_fee
+        mem, created = Member_fee.objects.get_or_create(
+            fee="Unpaid",
+            defaults={'fee': 'Unpaid'}
+        )
+        
         auction_user_kwargs = {
             'membership': mem,
             'user': user,
@@ -293,6 +298,10 @@ def make_participants(request, pid):
         if auctionuser.status == "pending":
             messages.success(request, "Your verification is pending. complete your additional detail and email verification. if these are already completed then try login after sometime.We are working on your detail verification.Thanks!")
             return redirect('profile', request.user.id)
+        # Disable bidding for bidders
+        if auctionuser.user_type == "Bidder":
+            messages.error(request, "Bidding is disabled for bidders. You can only view products.")
+            return redirect('product_detail', pid)
     product = Product.objects.get(id=pid)
     participant = Participants.objects.create(user=request.user, product=product)
     messages.success(request, "Added for participant successfully.")
@@ -339,6 +348,12 @@ def startbidding(request, pid):
     if not request.user.is_authenticated:
         return redirect('login')
     
+    # Disable bidding for bidders
+    auctionuser = AuctionUser.objects.get(user=request.user)
+    if auctionuser.user_type == "Bidder":
+        messages.error(request, "Bidding is disabled for bidders. You can only view products.")
+        return redirect('product_detail', pid)
+    
     product = Product.objects.get(id=pid)
     participant1 = ParticipantsHistory.objects.filter(product=product).order_by('-id')[:5]
     new = request.POST.get('new_price')
@@ -373,14 +388,14 @@ def changeupcomingtolive(request, pid):
     product.save()
     return JsonResponse({'myurl':'/'})
 
-def meetwinners(request):
-    if request.user.is_authenticated:
-        auctionuser = AuctionUser.objects.get(user=request.user)
-        if auctionuser.status == "pending":
-            messages.success(request, "Your verification is pending. complete your additional detail and email verification. if these are already completed then try login after sometime.We are working on your detail verification.Thanks!")
-            return redirect('profile', request.user.id)
-    product = Product.objects.filter().exclude(winner=None)
-    return render(request, 'meetwinners.html', {'product':product})
+# def meetwinners(request):
+#     if request.user.is_authenticated:
+#         auctionuser = AuctionUser.objects.get(user=request.user)
+#         if auctionuser.status == "pending":
+#             messages.success(request, "Your verification is pending. complete your additional detail and email verification. if these are already completed then try login after sometime.We are working on your detail verification.Thanks!")
+#             return redirect('profile', request.user.id)
+#     product = Product.objects.filter().exclude(winner=None)
+#     return render(request, 'meetwinners.html', {'product':product})
 
 
 def all_product(request):
@@ -436,12 +451,12 @@ def view_buyer_user(request):
 
 
 
-def view_participants(request):
-    if not request.user.is_authenticated:
-        return redirect('loginadmin')
-    pro = Participants.objects.filter()
-    d = {'pro':pro}
-    return render(request,'administration/view_participants.html',d)
+# def view_participants(request):
+#     if not request.user.is_authenticated:
+#         return redirect('loginadmin')
+#     pro = Participants.objects.filter()
+#     d = {'pro':pro}
+#     return render(request,'administration/view_participants.html',d)
 
 
 def Admin_product(request):
@@ -496,12 +511,12 @@ def View_Sub_Categary(request):
     return render(request,'administration/view_sub_category.html', d)
 
 
-def View_winner(request):
-    if not request.user.is_authenticated:
-        return redirect('loginadmin')
-    pro = Product.objects.filter().exclude(winner=None)
-    d = {'pro': pro}
-    return render(request,'administration/view_winner.html', d)
+# def View_winner(request):
+#     if not request.user.is_authenticated:
+#         return redirect('loginadmin')
+#     pro = Product.objects.filter().exclude(winner=None)
+#     d = {'pro': pro}
+#     return render(request,'administration/view_winner.html',d)
 
 
 
@@ -542,13 +557,13 @@ def delete_sub_category(request,pid):
     return redirect('view_sub_category')
 
 
-def delete_participant(request,pid):
-    if not request.user.is_authenticated:
-        return redirect('loginadmin')
-    cat = Sub_Category.objects.get(id=pid)
-    cat.delete()
-    messages.success(request, "Deleted Successfully")
-    return redirect('view_participants')
+# def delete_participant(request,pid):
+#     if not request.user.is_authenticated:
+#         return redirect('loginadmin')
+#     cat = Sub_Category.objects.get(id=pid)
+#     cat.delete()
+#     messages.success(request, "Deleted Successfully")
+#     return redirect('view_participants')
 
 
 def change_status(request,pid):
@@ -600,17 +615,38 @@ def Change_Password(request):
 def profile(request, pid):
     if not request.user.is_authenticated:
         return redirect('login')
-    user = User.objects.get(id=pid)
-    pro = AuctionUser.objects.get(user=user)
-    d={'pro':pro,'user':user}
-    return render(request,'profile.html',d)
+    
+    try:
+        print(f"Profile view called with pid: {pid}")
+        print(f"Request user: {request.user.id}")
+        
+        user = User.objects.get(id=pid)
+        print(f"Found user: {user.username}")
+        
+        pro = AuctionUser.objects.get(user=user)
+        print(f"Found AuctionUser: {pro.id}")
+        
+        d = {'pro': pro, 'user': user}
+        return render(request, 'profile.html', d)
+    except User.DoesNotExist:
+        print(f"User with id {pid} not found")
+        messages.error(request, "User not found.")
+        return redirect('home')
+    except AuctionUser.DoesNotExist:
+        print(f"AuctionUser for user {pid} not found")
+        messages.error(request, "User profile not found.")
+        return redirect('home')
+    except Exception as e:
+        print(f"Error in profile view: {str(e)}")
+        messages.error(request, f"Error loading profile: {str(e)}")
+        return redirect('home')
 
 
 def Edit_profile(request):
     if not request.user.is_authenticated:
         return redirect('login')
     pro = AuctionUser.objects.get(user=request.user)
-    if request.method == 'POST':
+    if request.method == "POST":
         f = request.POST['fname']
         l = request.POST['lname']
         u = request.POST['uname']
@@ -650,8 +686,6 @@ def Edit_profile(request):
             pro.save()
         except:
             pass
-
-
 
         pro.dob = d
         pro.user.username=u
@@ -729,5 +763,4 @@ def seller_detail(request,pid):
     if not request.user.is_authenticated:
         return redirect('loginadmin')
     data = AuctionUser.objects.get(id=pid)
-    d = {'data':data}
     return render(request,'administration/seller_detail.html',d)
